@@ -81,7 +81,7 @@ class view_empskills {
 
     /** These output the page elements */
     function output_selection_start() {
-        echo html_writer::start_tag('div', array('class'=>'import-course-selector backup-restore'));
+        echo html_writer::start_tag('div');
         echo "<br>"; 
         echo "<br>";  
     }
@@ -89,8 +89,9 @@ class view_empskills {
     /** Output form elements for the selection */
     function output_selection_body() {
         echo '<table class="generaltable boxaligncenter">';
+		
         echo '<tr class="heading">';
-        echo '<th colspan="2">' . get_string('selectmethod', 'local_empskills') . '</th>';
+        echo '<th>' . get_string('selectmethod', 'local_empskills') . '</th>';
         echo '</tr>';
         
         echo '<tr>';
@@ -99,44 +100,41 @@ class view_empskills {
         echo '</td>';
         echo '</tr>';
 		
-        $button_1 = new portfolio_add_button();
-        $button_1->set_callback_options('empskills_portfolio_caller', array('method' => 'es-obu'), 'local_empskills');
-		$button_1 = $button_1->to_html(PORTFOLIO_ADD_FULL_FORM, get_string('es-obu', 'local_empskills'));
-        if (empty($button_1)) {
+		$button = new portfolio_add_button();
+        $button->set_callback_options('empskills_portfolio_caller', array('method' => 'ES-OBU'), 'local_empskills');
+		$text = $button->to_html(PORTFOLIO_ADD_TEXT_LINK, get_string('es-obu', 'local_empskills'));
+        if (empty($text)) {
 			echo '<tr>';
 			echo '<td>';
 			echo html_writer::tag('div', 'No portfolio plugin available.');
 			echo '</td>';
 			echo '</tr>';
-        } else {
-			echo '<tr>';
-			echo '<td>';
-			echo html_writer::tag('div', $button_1);
-			echo '</td>';
-			echo '</tr>';
+			echo '</table>';
+			return;
+        }
+		echo '<tr>';
+		echo '<td>';
+		echo html_writer::tag('div', $text);
+		echo '</td>';
+		echo '</tr>';
 
-			$button_2 = new portfolio_add_button();
-			$button_2->set_callback_options('empskills_portfolio_caller', array('method' => 'es-cbi'), 'local_empskills');
-			$button_2 = $button_2->to_html(PORTFOLIO_ADD_FULL_FORM, get_string('es-cbi', 'local_empskills'));
-			if (!empty($button_2)) {
-				echo '<tr>';
-				echo '<td>';
-				echo html_writer::tag('div', $button_2);
-				echo '</td>';
-				echo '</tr>';
-			}
+		$button = new portfolio_add_button();
+		$button->set_callback_options('empskills_portfolio_caller', array('method' => 'ES-CBI'), 'local_empskills');
+		$text = $button->to_html(PORTFOLIO_ADD_TEXT_LINK, get_string('es-cbi', 'local_empskills'));
+		echo '<tr>';
+		echo '<td>';
+		echo html_writer::tag('div', $text);
+		echo '</td>';
+		echo '</tr>';
 		
-			$button_3 = new portfolio_add_button();
-			$button_3->set_callback_options('empskills_portfolio_caller', array('method' => 'empskill'), 'local_empskills');
-			$button_3 = $button_3->to_html(PORTFOLIO_ADD_FULL_FORM, get_string('empskill', 'local_empskills'));
-			if (!empty($button_3)) {
-				echo '<tr>';
-				echo '<td>';
-				echo html_writer::tag('div', $button_3);
-				echo '</td>';
-				echo '</tr>';
-			}
-		}
+		$button = new portfolio_add_button();
+		$button->set_callback_options('empskills_portfolio_caller', array('method' => 'empskill'), 'local_empskills');
+		$text = $button->to_html(PORTFOLIO_ADD_TEXT_LINK, get_string('empskill', 'local_empskills'));
+		echo '<tr>';
+		echo '<td>';
+		echo html_writer::tag('div', $text);
+		echo '</td>';
+		echo '</tr>';
 		
         echo '</table>';
     }

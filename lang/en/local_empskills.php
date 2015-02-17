@@ -33,6 +33,5 @@ $string['enter_selection'] = 'Please choose your preferred selection method';
 $string['es-obu'] = 'Brookes Attribute';
 $string['es-cbi'] = 'CBI/NUS Category';
 $string['empskill'] = 'Employability Skill';
-$string['mustprovidemethod'] = 'You must provide a selection method to export';
 $string[''] = "";
 
