@@ -32,9 +32,16 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 
     protected $method;
 
-    private $entries;
-	private $lastcategory;
-	private $lastskill;
+    private $skills;
+	private $html_entries;
+	private $leap2a_entries;
+	private $lastcategory = '';
+	private $lastskill = '';
+	private $leapwriter;
+	private $category = 0;
+	private $skill = 0;
+	private $entry_ids = array();
+	private $skill_ids = array();
 
     public static function expected_callbackargs() {
         return array(
@@ -47,15 +54,26 @@ class empskills_portfolio_caller extends portfolio_caller_base {
     }
 	
     public function load_data() {
-        global $DB;
 
+		$this->get_tagged_skills();
+		
+		$this->load_html_data();
+		
+		// Now sort the tagged skills by name
+		usort($this->skills, function($a, $b) {
+			return (strcmp($a['name'], $b['name']));
+		});
+		
+		$this->load_leap2a_data();
+		
     	$this->add_format(PORTFOLIO_FORMAT_PLAINHTML);
-		$this->entries = $this->get_tagged_entries();
+		
+		return;
 	}
 	
-	private function get_tagged_entries() {
-        global $DB, $USER;
-
+	private function get_tagged_skills() {
+        global $DB;
+		
 		// Get the tag ID of the given method (the category class name)
 		if ($this->method == 'empskill') {
 			$criteria = "rawname = '" . get_string('empskill', 'local_empskills') . "'";
@@ -91,7 +109,7 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 			}
 		}
 		
-		$skills = array();
+		$this->skills = array();
 		foreach ($categories as $category) {
 			// Store the ID of each related tag (skill) in an array
 			$criteria = "tagid = '" . $category['id'] . "' AND itemtype = 'tag' AND itemid <> '" . $class->id . "'";
@@ -104,7 +122,7 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 			// Get the sorted names of the related tags (skills) and store them in an array
 			$db_ret = $DB->get_records_list('tag', 'id', $ids, 'name', 'rawname, id');
 			foreach ($db_ret as $row) {
-				$skills[] = array(
+				$this->skills[] = array(
 					'category' => $category['name'],
 					'id' => $row->id,
 					'name' => $row->rawname
@@ -112,9 +130,15 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 			}
 		}
 		
-		$tagged_entries = array();
-		$count = 0;
-		foreach ($skills as $skill) {
+		return;
+	}
+	
+	private function load_html_data() {
+        global $DB, $USER;
+
+		$this->html_entries = array();
+		$entry_count = 0;
+		foreach ($this->skills as $skill) {
 			$blog = new blog_listing(
 				array(
 					'user' => $USER->id,
@@ -138,9 +162,9 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 					}
 				}
 		
-				$count++;
-				$tagged_entries[] = array(
-					'id' => $count,
+				$entry_count++;
+				$this->html_entries[] = array(
+					'id' => 'entry:' . $entry_count,
 					'category' => $skill['category'],
 					'skill' => $skill['name'],
 					'created' => $blog_entry->created,
@@ -152,70 +176,102 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 			}
 		}
 		
-		return $tagged_entries;
+		return;
 	}
 	
-    function get_return_url() {
-        global $CFG;
-        return $CFG->wwwroot . '/local/empskills/empskills.php';
-    }
-	
-    function get_navigation() {
-        global $CFG;
+	private function load_leap2a_data() {
+        global $DB, $USER;
+		
+		$this->leap2a_entries = array();
+		$skill_count = 0;
+		$entry_count = 0;
+		foreach ($this->skills as $skill) {
+			
+			if ($skill['name'] == $this->lastskill) {
+				$tags[] = $skill['category'];
+				continue;
+			}
+			
+			// Store a skill tag entry
+			if ($this->lastskill != '') {
+				$skill_count++;
+				$this->leap2a_entries[] = array(
+					'id' => 'skill:' . $skill_count,
+					'skill' => $this->lastskill,
+					'created' => '',
+					'subject' => $tags[0],
+					'course' => $tags[1],
+					'summary' => '',
+					'summaryformat' => ''
+				);
+			}
+			
+			$this->lastskill = $skill['name'];
+			$tags = array();
+			$tags[] = $skill['category'];
 
-        $navlinks = array();
-        $navlinks[] = array(
-            'name' => format_string(get_string('empskills', 'local_empskills')),
-            'link' => $CFG->wwwroot . '/local/empskills/empskills.php',
-            'type' => 'title'
-        );
-        return array($navlinks);
-    }
+			$blog = new blog_listing(
+				array(
+					'user' => $USER->id,
+					'tag' => $skill['id']
+				)
+			);
+			$blog_entries = $blog->get_entries();
+			foreach ($blog_entries as $row) {
+				$blog_entry = new blog_entry($row->id); // required to get the course association (bug?)
+				$course_name = '';
+				if ($blog_entry->courseassoc != 0) {
+					if (($context = $DB->get_record('context', array('id' => $blog_entry->courseassoc)))) {
+						if (($course = $DB->get_record('course', array('id' => $context->instanceid)))) {
+							$course_name = $course->fullname;
+							$split_pos = strpos($course_name, ' (');
+							if ($split_pos !== false) {
+								$course_name = substr($course_name, 0, $split_pos);
+							}
+						}
+					}
+				}
+		
+				$entry_count++;
+				$this->leap2a_entries[] = array(
+					'id' => 'entry:' . $entry_count,
+					'skill' => $skill['name'],
+					'created' => $blog_entry->created,
+					'subject' => $blog_entry->subject,
+					'course' => $course_name,
+					'summary' => $blog_entry->summary,
+					'summaryformat' => $blog_entry->summaryformat
+				);
+			}
+		}
+		
+		// Store any final skill tag entry
+		if ($this->lastskill != '') {
+			$skill_count++;
+			$this->leap2a_entries[] = array(
+				'id' => 'skill:' . $skill_count,
+				'skill' => $this->lastskill,
+				'created' => '',
+				'subject' => $tags[0],
+				'course' => $tags[1],
+				'summary' => '',
+				'summaryformat' => ''
+			);
+			$this->lastskill = '';
+		}
+		
+		return;
+	}
 	
     function prepare_package() {
 
-        if ($this->exporter->get('formatclass') == PORTFOLIO_FORMAT_LEAP2A) {
-			$this->prepare_leap2a_package();
-		} else {
+        if ($this->exporter->get('formatclass') != PORTFOLIO_FORMAT_LEAP2A) {
 			$this->prepare_html_package();
+		} else {
+			$this->prepare_leap2a_package();
         }
 		
 		return;
-    }
-	
-    function prepare_leap2a_package() {
-
-		$leapwriter = $this->exporter->get('format')->leap2a_writer();
-		
-		$ids = array(); // keep track of all entry ids so we can add a selection element
-		foreach ($this->entries as $entry) {
-			$ids[] = $this->prepare_leap2a_entry($leapwriter, $entry);
-		}
-
-		$manifest = ($this->exporter->get('format') instanceof PORTFOLIO_FORMAT_RICH);
-		
-		// add on an extra 'selection' entry
-		$selection = new portfolio_format_leap2a_entry('selection', get_string('empskills', 'local_empskills'), 'selection');
-		$leapwriter->add_entry($selection);
-		$leapwriter->make_selection($selection, $ids, 'Grouping');
-		
-		$content = $leapwriter->to_xml();
-		$name = $this->get('exporter')->get('format')->manifest_name();
-	
-		$this->get('exporter')->write_new_file($content, $name, $manifest);
-		
-		return;
-    }
-
-    private function prepare_leap2a_entry(portfolio_format_leap2a_writer $leapwriter, $entry) {
-		
-        $summary = format_text($entry['summary'], $entry['summaryformat'], portfolio_format_text_options());
-        $leap_entry = new portfolio_format_leap2a_entry($entry['id'],  $entry['subject'], 'entry', $summary);
-        $leap_entry->published = $entry['created'];
-        $leap_entry->add_category('web', 'resource_type');
-        $leapwriter->add_entry($leap_entry);
-		
-        return $leap_entry->id;
     }
 	
     function prepare_html_package() {
@@ -227,9 +283,7 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 		}
 		$content .= '<td>Skill</td><td>Date</td><td>Title</td><td>Course</td><td>Body</td><td>Link</td></tr>' . "\n";
 		
-		$this->lastcategory = '';
-		$this->lastskill = '';
-		foreach ($this->entries as $entry) {
+		foreach ($this->html_entries as $entry) {
 			$entryhtml =  $this->prepare_html_entry($entry);
 			$content .= $entryhtml;
 		}
@@ -283,6 +337,82 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 
         return $output;
     }
+	
+    function prepare_leap2a_package() {
+
+		$this->leapwriter = $this->exporter->get('format')->leap2a_writer();
+		
+		foreach ($this->leap2a_entries as $entry) {
+			$this->prepare_leap2a_entry($entry);
+		}
+		
+		if (count($this->skill_ids)) {
+			$selection = new portfolio_format_leap2a_entry('selection', get_string('empskills', 'local_empskills'), 'selection');
+			$this->leapwriter->add_entry($selection);
+			$this->leapwriter->make_selection($selection, $this->skill_ids, 'Grouping');
+		}
+		
+		$content = $this->leapwriter->to_xml();
+		$name = $this->get('exporter')->get('format')->manifest_name();
+		$manifest = ($this->exporter->get('format') instanceof PORTFOLIO_FORMAT_RICH);
+		$this->get('exporter')->write_new_file($content, $name, $manifest);
+		
+		return;
+    }
+
+    private function prepare_leap2a_entry($entry) {
+		if (substr($entry['id'], 0, 5) == 'entry') {
+			$summary = $entry['summary'];
+			if ($entry['course'] != '') {
+				$summary = '<p>[' . $entry['course'] . ']</p>' . $summary;
+			}
+			$summary = format_text($summary, $entry['summaryformat'], portfolio_format_text_options());
+			$leap_entry = new portfolio_format_leap2a_entry($entry['id'], $entry['subject'], 'entry', $summary);
+			$leap_entry->published = $entry['created'];
+			$leap_entry->add_category('Unready', 'readiness');
+			$leap_entry->add_category($entry['skill']);
+			$this->leapwriter->add_entry($leap_entry);
+			$this->entry_ids[] = $leap_entry->id;
+		} else if (count($this->entry_ids)) {
+			$leap_entry = new portfolio_format_leap2a_entry($entry['id'], $entry['skill'], 'selection');
+			if ($entry['subject'] != '') {
+				$leap_entry->add_category($entry['subject']); // first tag
+				if ($entry['course'] != '') {
+					$leap_entry->add_category($entry['course']); // second tag
+				}
+			}
+			$this->leapwriter->add_entry($leap_entry);
+			$this->skill_ids[] = $leap_entry->id;
+			$this->leapwriter->make_selection($leap_entry, $this->entry_ids, 'Blog');
+			$this->entry_ids = array();
+		}
+
+        return;
+    }
+	
+	private function prepare_leap2a_selection () {
+		if ($this->lastcategory != '') {
+			$this->prepare_leap2a_category();
+		}
+	}
+	
+    function get_return_url() {
+        global $CFG;
+        return $CFG->wwwroot . '/local/empskills/empskills.php';
+    }
+	
+    function get_navigation() {
+        global $CFG;
+
+        $navlinks = array();
+        $navlinks[] = array(
+            'name' => format_string(get_string('empskills', 'local_empskills')),
+            'link' => $CFG->wwwroot . '/local/empskills/empskills.php',
+            'type' => 'title'
+        );
+		
+        return array($navlinks);
+    }
 
     function get_sha1() {
         $filesha = '';
@@ -291,7 +421,7 @@ class empskills_portfolio_caller extends portfolio_caller_base {
         } catch (portfolio_caller_exception $e) { } // no files
 
 		$sha1s = array($filesha);
-		foreach ($this->entries as $entry) {
+		foreach ($this->html_entries as $entry) {
 			$sha1s[] = sha1($entry['subject'] . ',' . $entry['summary']);
 		}
 		return sha1(implode(',', $sha1s));
@@ -299,8 +429,8 @@ class empskills_portfolio_caller extends portfolio_caller_base {
 
     function expected_time() {
         $filetime = $this->expected_time_file();
-        if ($this->entries) {
-            $entrytime = portfolio_expected_time_db(count($this->entries));
+        if ($this->html_entries) {
+            $entrytime = portfolio_expected_time_db(count($this->html_entries));
             if ($filetime < $entrytime) {
                 return $entrytime;
             }
