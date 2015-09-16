@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>BRISC</title>
+    <meta name="author" content="Oxford Brookes University" />
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+<!--
+    <meta http-equiv="content-security-policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.brookes.ac.uk" />
+-->
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name=”msapplication-tap-highlight” content=”no” />
+    <link rel="stylesheet" type="text/css" href="css/colour_dark.css" title="Dark"/>
+    <link rel="alternate stylesheet" type="text/css" href="css/colour_light.css" title="Light" disabled=""/>
+    <link rel="alternate stylesheet" type="text/css" href="css/colour_aqua.css" title="Aqua" disabled="" />
+    <link rel="alternate stylesheet" type="text/css" href="css/colour_blue.css" title="Blue" disabled="" />
+    <link rel="alternate stylesheet" type="text/css" href="css/colour_fresh.css" title="Fresh" disabled=""/>
+    <link rel="alternate stylesheet" type="text/css" href="css/colour_sky.css" title="Sky" disabled="" />
+    <link rel="stylesheet" type="text/css" href="css/layout_standard.css" />
+    <link rel="stylesheet" type="text/css" href="css/platformOverrides.css" />
+    <script type="text/javascript" src="scripts/platformHeader.js"></script>
+</head>
+<body>
+    <div id="page_header">
+        <div id="topbar">
+            <button type="button" id="btn_info">Info</button>
+            <button type="button" id="btn_logout">Logout</button>
+        </div>
+        <h1>BRISC</h1>
+        <div id="pane_header"><button type="button" id="btn_back">Back</button><p id="pane_short_title"></p><p id="pane_medium_title"></p><p id="pane_long_title"></p><button type="button" id="btn_refresh">Refresh</button></div>
+    </div>
+    <div class="pane" id="pane_debug">
+        <p></p>
+    </div>
+    <div class="pane" id="pane_info">
+        <p>Brookes Individual Skills Catcher (BRISC) <span id="version"></span></p>
+        <script type="text/javascript" src="scripts/platformInfo.js"></script>
+    </div>
+    <div class="pane" id="pane_authentication">
+        <p class="heading">Hello.  Welcome to BRISC from Oxford Brookes University.</p>
+        <p class="heading">Before we begin, we need to know the correct authenication method to use for you.</p>
+        <p class="heading">Do you have an '@brookes.ac.uk' email address?</p>
+        <button type="button" class="btn_wide" name="btn_auth_yes">Yes</button>
+        <button type="button" class="btn_wide" name="btn_auth_no">No</button>
+        <button type="button" class="btn_wide" name="btn_auth_exit">Exit</button>
+    </div>
+    <div class="pane" id="pane_authorisation">
+        <p class="heading">You need to log in using a browser window.  Do you authorise this?</p>
+        <button type="button" class="btn_wide" name="btn_authorise">Authorise</button>
+        <button type="button" class="btn_wide" name="btn_exit">Exit</button>
+    </div>
+    <div class="pane" id="pane_login">
+        <form id="form_login">
+            <label for="username">Username</label>
+            <input type="text" name="username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <label for="password">Password</label>
+            <input type="password" name="password" />
+            <button type="button" name="btn_login">Login</button>
+        </form>
+    </div>
+    <div class="pane" id="pane_classes">
+        <p class="heading">Please choose your preferred selection method</p>
+        <button type="button" class="btn_wide" name="btn_obu_class">Brookes Attribute</button>
+        <button type="button" class="btn_wide" name="btn_cbi_class">CBI/NUS Category</button>
+        <button type="button" class="btn_wide" name="btn_emp_skills">Employability Skill</button>
+        <button type="button" class="btn_wide" id="btn_get_stats" name="btn_get_stats">Faculty Statistics</button>
+        <div class="pane_footer">
+            <button type="button" class="btn_footer" name="btn_switch_theme"><strong>switch colour theme</strong></button>
+        </div>
+    </div>
+    <div class="pane" id="pane_themes">
+        <p class="heading">Please choose your preferred colour theme</p>
+        <button type="button" class="btn_wide" name="btn_theme_0">Theme 0</button>
+        <button type="button" class="btn_wide" name="btn_theme_1">Theme 1</button>
+        <button type="button" class="btn_wide" name="btn_theme_2">Theme 2</button>
+        <button type="button" class="btn_wide" name="btn_theme_3">Theme 3</button>
+        <button type="button" class="btn_wide" name="btn_theme_4">Theme 4</button>
+        <button type="button" class="btn_wide" name="btn_theme_5">Theme 5</button>
+        <button type="button" class="btn_wide" name="btn_theme_6">Theme 6</button>
+        <button type="button" class="btn_wide" name="btn_theme_7">Theme 7</button>
+        <button type="button" class="btn_wide" name="btn_theme_8">Theme 8</button>
+        <button type="button" class="btn_wide" name="btn_theme_9">Theme 9</button>
+    </div>
+    <div class="pane" id="pane_faculties">
+        <p class="loading" id="loading_faculties">Loading faculties...</p>
+        <p class="noresults" id="no_faculties">No faculties found</p>
+        <ul id="list_faculties"></ul>
+    </div>
+    <div class="pane" id="pane_faculty_menu">
+        <ul id="faculty_menu"></ul>
+    </div>
+    <div class="pane" id="pane_faculty_stats">
+        <p class="sub_heading" id="faculty_stats_guide"></p>
+        <p class="loading" id="loading_faculty_stats">Loading averages...</p>
+        <p class="noresults" id="no_faculty_stats">No averages found</p>
+        <ul id="list_faculty_stats"></ul>
+    </div>
+    <div class="pane" id="pane_course_stats">
+        <p class="sub_heading" id="course_stats_guide"></p>
+        <p class="loading" id="loading_course_stats">Loading modules...</p>
+        <p class="noresults" id="no_course_stats">No modules found</p>
+        <ul id="list_course_stats"></ul>
+        <div class="pane_footer">
+            <button type="button" class="btn_footer" name="btn_list_faculty">List faculty skills</button>
+        </div>
+    </div>
+    <div class="pane" id="pane_skill_stats">
+        <p class="sub_heading" id="skill_stats_guide"></p>
+        <p class="loading" id="loading_skill_stats">Loading skills...</p>
+        <p class="noresults" id="no_skill_stats">No skills found</p>
+        <ul id="list_skill_stats"></ul>
+    </div>
+    <div class="pane" id="pane_categories">
+        <p class="loading" id="loading_categories">Loading categories...</p>
+        <p class="noresults" id="no_categories">No categories found</p>
+        <ul id="list_categories"></ul>
+    </div>
+    <div class="pane" id="pane_skills">
+        <p class="loading" id="loading_skills">Loading skills...</p>
+        <p class="noresults" id="no_skills">No skills found</p>
+        <ul id="list_skills"></ul>
+        <div class="pane_footer">
+            <button type="button" class="btn_footer" name="btn_list_all">List all entries</button>
+        </div>
+    </div>
+    <div class="pane" id="pane_entries">
+        <p class="sub_heading" id="skill_description"></p>
+        <p class="loading" id="loading_entries">Loading your blog entries...</p>
+        <p class="noresults" id="no_entries">No entries found</p>
+        <ul id="list_entries"></ul>
+        <div class="pane_footer" id="new_entry">
+            <button type="button" class="btn_footer" name="btn_new_entry">New entry</button>
+        </div>
+    </div>
+    <div class="pane" id="pane_add_edit">
+        <p class="noresults" id="no_current">No entry found</p>
+        <p class="sub_heading" id="skill_guide"></p>
+        <form id="form_add_edit">
+            <label for="entry_title">Title</label>
+            <input type="text" name="entry_title" />
+            <label for="entry_course">Current Module (if applicable)</label>
+            <select name="entry_course"></select>
+            <label for="entry_body">Body (What to remember)</label>
+            <textarea name="entry_body"></textarea>
+            <label for="entry_link">Link (URL)</label>
+            <input type="text" name="entry_link" />
+            <p id="entry_private"><label for="entry_private">Private<input type="checkbox" name="entry_private" checked="checked" /><div><div></div></div></label></p>
+            <button type="button" class="btn_narrow" name="btn_save_entry">Save</button>
+        </form>
+    </div>
+    <div class="pane" id="pane_entry">
+        <p class="loading" id="loading_entry">Loading blog entry...</p>
+        <p class="noresults" id="no_entry">No entry found</p>
+        <h2 id="entry_title"></h2>
+        <h3 id="entry_date"></h3>
+        <p class="heading" id="entry_course"></p>
+        <p id="entry_body"></p>
+        <p id="entry_link"></p>
+        <div class="pane_footer">
+            <button type="button" class="btn_footer" name="btn_edit_entry">Edit entry</button>
+            <button type="button" class="btn_footer" name="btn_delete_entry">Delete entry</button>
+        </div>
+    </div>
+    <div class="pane" id="pane_confirm_entry_delete">
+        <p>Are you sure you want to delete this entry?</p>
+        <button type="button" class="btn_narrow" name="btn_delete_yes">Yes</button>
+        <button type="button" class="btn_narrow" name="btn_delete_no">No</button>
+    </div>
+    <div id="error_box">
+        <p></p>
+    </div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="scripts/platformFooter.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="scripts/empskill.js"></script>
+    <script type="text/javascript" src="scripts/index.js"></script>
+    <script type="text/javascript">
+        (function () {
+            launch.app('v1.2', 'https://noodle.brookes.ac.uk');
+        })();
+    </script>
+</body>
+</html>

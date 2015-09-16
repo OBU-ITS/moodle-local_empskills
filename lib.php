@@ -28,12 +28,7 @@
 function local_empskills_extends_navigation($navigation) {
     global $CFG, $USER, $PAGE;
  
-	// Navigation item not relevant if portfolios aren't enabled
-	if (empty($CFG->enableportfolios)) {
-		return;
-	}
-
-	// Only let users with the appropriate capability see this navigation item
+	// Only let users with the appropriate capability see these navigation items
     if (!has_capability('moodle/blog:create', context_system::instance())) {
         return;
     }
@@ -42,6 +37,10 @@ function local_empskills_extends_navigation($navigation) {
 	if (!$nodeProfile) {
 		return;
 	}
-	$nodeEmpskills = $nodeProfile->add(get_string('empskills', 'local_empskills')); // Add the parent...
-	$nodeEmpskills->add(get_string('exportskills', 'local_empskills'), '/local/empskills/empskills.php'); // ...and then the child
+	
+	$nodeEmpskills = $nodeProfile->add(get_string('empskills', 'local_empskills')); // Add the parent
+	$nodeEmpskills->add('BRISC', '/local/empskills/brisc.php'); // BRISC web app
+	if (!empty($CFG->enableportfolios)) { // Only relevant if portfolios are enabled
+		$nodeEmpskills->add(get_string('exportskills', 'local_empskills'), '/local/empskills/empskills.php'); // ...and then the child
+	}
 }

@@ -1,0 +1,338 @@
+﻿body {
+	-webkit-text-size-adjust: none; /* prevent webkit from resizing text to fit */
+	-ms-text-size-adjust: none;
+    -webkit-user-select: text;      /* allow copy/paste, to prevent, change 'text' to 'none' */
+    -ms-user-select: text;
+	font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+	font-size: 100%;
+	line-height: 1.5em;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+/* ignored by wp8? */
+/*body:after,
+body::after {
+	content: "";
+	background: url("../images/background.svg") fixed center;
+	z-index: -1;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0.03;
+}
+*/
+p {
+	margin-top: 0;
+}
+
+button:focus {
+	outline: none;
+}
+
+#page_header {
+	position: fixed;
+	width: 100%;
+}
+
+#topbar {
+	font-weight: bold;
+	font-size: 1.3em;
+	text-align: center;
+	margin: 0;
+	width: 100%;
+	height: 30px;
+}
+
+#btn_logout {
+	background-color: transparent;
+	display: none;
+	position: absolute;
+	top: 5px;
+	left: 6px;
+	font-size: 0.7em;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+#btn_info {
+	background-color: transparent;
+	color: transparent;
+	position: absolute;
+	top: 5px;
+	right: 6px;
+	width: 20px;
+	height: 20px;
+    background-size: 20px 20px;
+    background-image: url("../images/information-icon.png");
+	background-repeat: no-repeat;
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
+h1 {
+	text-align: center;
+	font-size: 1.4em;
+	line-height: 2.4em;
+	margin: 0;
+	width: 100%;
+}
+
+#pane_header {
+	font-weight: bold;
+	font-size: 1.3em;
+	width: 100%;
+	line-height: 2em;
+	height: 2em;
+	text-align: center;
+	margin: 0;
+	position: relative;
+}
+
+#pane_short_title {
+	font-size: 0.8em;
+	margin: 0;
+}
+
+#pane_medium_title {
+	font-size: 0.65em;
+	margin: 0;
+}
+
+#pane_long_title {
+	font-size: 0.65em;
+	line-height: 0.9em;
+	margin: 0;
+}
+
+#btn_back {
+	background-color: transparent;
+	display: block;
+	position: absolute;
+	height: 28px;
+	border: 1px solid white;
+	border-radius: 5px;
+	padding: 0;
+	top: 50%;
+	margin-top: -14px;
+	left: 14px;
+	width: 40px;
+	font-size: 13px;
+	line-height: 26px;
+}
+
+#btn_refresh {
+	background-color: transparent;
+	color: transparent;
+	display: none;
+	position: absolute;
+	top: 50%;
+	right: 6px;
+	width: 20px;
+	height: 20px;
+    background-size: 20px 20px;
+    background-image: url("../images/refresh-icon.png");
+	background-repeat: no-repeat;
+	border: 0;
+	padding: 0;
+	margin: -10px 0 0 0;
+}
+
+div.pane {
+	display: none;
+}
+
+div.pane button {
+	border-radius: 6px;
+    border-width: 0px;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	padding: 4% 2%;
+	margin: 0 0 1% 0;
+}
+
+#list_course_stats {
+    font-size: 0.8em;
+}
+
+.listdate {
+	font-size: 0.7em;
+    line-height: 0.9em;
+}
+
+.count {
+	width: 10%;
+	float: right;
+	text-align: right;
+}
+	
+.percent {
+	width: 15%;
+	float: right;
+	text-align: right;
+	font-size: 0.8em;
+}	
+
+p.heading {
+	padding: 0 4%;
+	font-size: 1.0em;
+	font-style: italic;
+}
+
+p.sub_heading {
+	display: none;
+	padding: 0 4%;
+    line-height: 1.2em;
+	font-size: 0.8em;
+	font-style: italic;
+}
+
+p.loading,
+p.noresults {
+	display: none;
+	padding: 0 4%;
+	font-size: 1.05em;
+	font-weight: bold;
+}
+
+form {
+	margin: 0 2%;
+}
+
+form label,
+form button,
+form input,
+form select,
+form textarea {
+	display: block;
+}
+
+form input,
+form select,
+form textarea {
+	width: 98%;
+}
+
+form input,
+form select {
+	margin-top: 2%;
+}
+
+form input,
+form textarea {
+	font-size: 1.1em;
+}
+
+form select {
+	font-size: 1.0em;
+}
+
+form button,
+form textarea {
+	margin: 0;
+}
+
+form textarea {
+	height: 8em;
+}
+
+#form_login label[for=password] {
+	margin-top: 6%;
+}
+
+#form_login button {
+	margin: 10% 0 0 0;
+	text-transform: uppercase;
+	padding: 4% 10%;
+}
+
+#error_box {
+	position: absolute;
+	width: 90%;
+	top: 20%;
+	left: 5%;
+	border: 1px solid white;
+	display: none;
+}
+
+#error_box p {
+	text-align: center;
+	margin: 30% 1%;
+	font-size: 105%;
+}
+
+.btn_wide {
+	width: 94%;
+	margin: 8% 0 3% 3%;
+	padding: 2% 8%;
+	font-size: 1.1em;
+}
+
+.btn_narrow,
+.btn_footer {
+	padding: 2% 8%;
+	font-size: 1.1em;
+}
+
+div.pane_footer {
+	display: block;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.btn_footer {
+	width: 94%;
+	position: absolute;
+	top: 50%;
+	left: 3%;
+}
+
+button[name=btn_save_entry] {
+	margin: 8% 0 4% 0;
+}
+
+#pane_info {
+	margin: 0 2%;
+}
+
+#pane_info h2 {
+	font-size: 1.3em;
+	margin-top: 0;
+}
+
+#pane_entry h2 {
+	padding: 0 4%;
+	font-size: 1.05em;
+	font-weight: bold;
+	margin-top: 0;
+}
+
+#pane_entry h3 {
+	padding: 0 4%;
+	font-size: .8em;
+	margin-top: 0;
+}
+
+#pane_entry p {
+	padding: 0 4%;
+	margin-top: 0;
+}
+
+#pane_confirm_entry_delete {
+  margin: 0 2%;
+}
