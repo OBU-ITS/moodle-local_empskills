@@ -9,7 +9,7 @@
     <meta http-equiv="content-security-policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.brookes.ac.uk" />
 -->
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <meta name=”msapplication-tap-highlight” content=”no” />
+    <meta name="msapplication-tap-highlight" content="no" />
     <link rel="stylesheet" type="text/css" href="css/colour_dark.css" title="Dark"/>
     <link rel="alternate stylesheet" type="text/css" href="css/colour_light.css" title="Light" disabled=""/>
     <link rel="alternate stylesheet" type="text/css" href="css/colour_aqua.css" title="Aqua" disabled="" />
@@ -145,8 +145,11 @@
             <label for="entry_link">Link (URL)</label>
             <input type="text" name="entry_link" />
             <p id="entry_private"><label for="entry_private">Private<input type="checkbox" name="entry_private" checked="checked" /><div><div></div></div></label></p>
-            <button type="button" class="btn_narrow" name="btn_save_entry">Save</button>
         </form>
+        <div class="pane_footer">
+            <button type="button" class="btn_footer" name="btn_save_entry">Save entry</button>
+            <button type="button" class="btn_footer" name="btn_cancel_entry">Cancel</button>
+        </div>
     </div>
     <div class="pane" id="pane_entry">
         <p class="loading" id="loading_entry">Loading blog entry...</p>

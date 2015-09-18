@@ -72,6 +72,11 @@ var app = {
         app.current_course_id = 0;
         app.current_course_name = null;
 
+        // These are to hold scroll positions to restore when going 'back' to long lists
+        app.current_courses_pos = 0;
+        app.current_skills_pos = 0;
+        app.current_entries_pos = 0;
+
         app.user_faculties = 0;
         app.current_faculty_id = 0;
         app.current_faculty_name = null;
@@ -84,16 +89,9 @@ var app = {
         $(document).on("deviceready", function () {
 
             $('#btn_logout').on('click', function () {
-                app.token = null;
-                if (app.platform == 'browser') {
-                    window.sessionStorage.removeItem(app.service + '_token');
-                } else {
-                    window.localStorage.removeItem(app.service + '_token');
-                }
+                window.localStorage.removeItem(app.service + '_token');
                 app.info_displayed = false;
-                if (app.platform == 'browser') {
-                    window.close();
-                } else if (app.auth == 2) {
+                if (app.auth == 2) {
                     app.showLoginPane();
                 } else {
                     window.open(app.moodle_url + '/local/obu_login/logout.php?scheme=' + app.scheme + '&service=' + app.service, '_system');
@@ -174,22 +172,24 @@ var app = {
                             break;
                         case 'faculty_stats':
                         case 'course_stats':
+                            app.current_courses_pos = 0;
                             app.showFacultyMenuPane();
                             break;
                         case 'skill_stats':
                             app.showCourseStatsPane();
                             break;
                         case 'skills':
+                            app.current_skills_pos = 0;
                             if (app.current_class_id == 0) // We skipped categories
                                 app.showClassesPane();
                             else
                                 app.showCategoriesPane();
                             break;
                         case 'entries':
+                            app.current_entries_pos = 0;
                             app.showSkillsPane();
                             break;
-                        case 'add_edit':
-                            app.showEntriesPane();
+                        case 'add_edit': // Ignore - should be using save/cancel buttons
                             break;
                         case 'entry':
                             app.showEntriesPane();
@@ -224,8 +224,10 @@ var app = {
                 if (parseFloat(device.version) < 3) {
                     $(window).scroll(function () {
                         if (app.current_pane == 'classes' ||
+	    				    app.current_pane == 'course_stats' ||
 	    				    app.current_pane == 'skills' ||
 	    				    app.current_pane == 'entries' ||
+	    				    app.current_pane == 'add_edit' ||
 		    			    app.current_pane == 'entry') {
 
                             var pane_footer_height = $('#pane_' + app.current_pane + ' div.pane_footer').outerHeight();
@@ -265,6 +267,7 @@ var app = {
 //            }
             if (app.platform == 'browser') {
                 app.token = window.sessionStorage.getItem(app.service + '_token'); // Temporary
+                $('#btn_logout').hide(); // Doesn't make sense in a browser context (where the token is temporary anyway)
             } else {
                 app.token = window.localStorage.getItem(app.service + '_token'); // 'Permanent'
             }
@@ -529,7 +532,9 @@ var app = {
         app.current_pane = 'classes';
         app.showTitle('Selection Method');
 
-        $('#btn_logout').show();
+        if (app.platform != 'browser') {
+            $('#btn_logout').show();
+        }
         $('#btn_back').hide();
 
         $('#btn_refresh').hide();
@@ -662,7 +667,6 @@ var app = {
         app.current_pane = 'themes';
         app.showTitle('Colour Themes');
 
-        $('#btn_logout').show();
         $('#btn_back').show();
 
         $('#btn_refresh').hide();
@@ -1041,10 +1045,14 @@ var app = {
 			        }
 			        var course_id = $(this).data('course_id');
 			        var course_name = $(this).data('course_name');
+			        app.current_courses_pos = $('body').scrollTop();
 			        app.current_course_id = course_id;
 			        app.current_course_name = course_name;
 			        app.showSkillStatsPane();
 			    });
+			    if (app.current_courses_pos) {
+			        $('body').scrollTop(app.current_courses_pos);
+			    }
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1259,8 +1267,12 @@ var app = {
 			    });
 			    $('#list_skills li').on('click', function () {
 			        app.current_skill_id = $(this).data('skill_id');
+			        app.current_skills_pos = $('body').scrollTop();
 			        app.showEntriesPane();
 			    });
+			    if (app.current_skills_pos) {
+			        $('body').scrollTop(app.current_skills_pos);
+			    }
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1374,8 +1386,12 @@ var app = {
 			    });
 			    $('#list_entries li').on('click', function () {
 			        app.current_entry_id = $(this).data('entry_id');
+			        app.current_entries_pos = $('body').scrollTop();
 			        app.showEntryPane();
 			    });
+			    if (app.current_entries_pos) {
+			        $('body').scrollTop(app.current_entries_pos);
+			    }
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1406,7 +1422,7 @@ var app = {
             app.showTitle(app.current_class_name);
         }
 
-        $('#btn_back').show();
+        $('#btn_back').hide();
 
         $('#btn_refresh').hide();
 
@@ -1422,9 +1438,9 @@ var app = {
         $('input[name="entry_private"]').prop('checked', true);
         $('#entry_private').hide(); // To avoid confusion because, currently, all blog entries are private anyway
 
+        $('button[name="btn_save_entry"]').show();
         $('button[name="btn_save_entry"]').prop('disabled', false);
-        $('button[name="btn_save_entry"]').html('Save');
-
+        $('button[name="btn_save_entry"]').html('Save entry');
         $('button[name="btn_save_entry"]').off('click');
         $('button[name="btn_save_entry"]').on('click', function () {
             if (app.platform == 'ios') {
@@ -1453,6 +1469,7 @@ var app = {
 
             $('button[name="btn_save_entry"]').prop('disabled', true);
             $('button[name="btn_save_entry"]').html('Saving...');
+            $('button[name="btn_cancel_entry"]').hide();
 
             app.callWebservice(
 				'local_empskill_ws_save_entry',
@@ -1473,13 +1490,24 @@ var app = {
 				function (data) {
 				    console.log(data.debuginfo);
 				    $('button[name="btn_save_entry"]').prop('disabled', false);
-				    $('button[name="btn_save_entry"]').html('Save');
+				    $('button[name="btn_save_entry"]').html('Save entry');
+				    $('button[name="btn_cancel_entry"]').show();
 				    app.showErrorDialog('Error saving blog entry');
 				}
 			);
         });
 
+        $('button[name="btn_cancel_entry"]').show();
+        $('button[name="btn_cancel_entry"]').off('click');
+        $('button[name="btn_cancel_entry"]').on('click', function () {
+            if (app.platform == 'ios') {
+                $('body').scrollTop(0);
+            }
+            app.showEntriesPane();
+        });
+
         $('#pane_add_edit').show();
+        app.setPaneFooterHeight('pane_add_edit');
 
         if (app.current_entry_id) {
             app.getCurrentEntry();
@@ -1622,7 +1650,9 @@ var app = {
 			    $('#entry_body').html(data.entry_body.replace(/\n/g, "&nbsp;<br />"));
 			    if (data.entry_link) {
 			        var link = '';
-			        if (app.platform == "android") {
+			        if (app.platform == "browser") {
+			            link = '<a href="' + data.entry_link + '" target="_blank">' + data.entry_link + '</a>';
+			        } else if (app.platform == "android") {
 			            link = '<a onclick="navigator.app.loadUrl(\'' + data.entry_link + '\', { openExternal:true });" href="#">' + data.entry_link + '</a>';
 			        } else {
 			            link = '<a onclick="window.open(\'' + data.entry_link + '\', \'_system\');" href="#">' + data.entry_link + '</a>';

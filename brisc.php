@@ -41,7 +41,6 @@ $PAGE->set_heading($heading);
 
 // The page contents
 echo $OUTPUT->header();
-echo $OUTPUT->heading($heading);
 
 echo '<center><iframe src="' . $launch . '" width="480" height="680"></iframe></center>';
 

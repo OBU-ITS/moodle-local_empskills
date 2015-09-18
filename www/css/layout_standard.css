@@ -302,10 +302,6 @@ div.pane_footer {
 	left: 3%;
 }
 
-button[name=btn_save_entry] {
-	margin: 8% 0 4% 0;
-}
-
 #pane_info {
 	margin: 0 2%;
 }
