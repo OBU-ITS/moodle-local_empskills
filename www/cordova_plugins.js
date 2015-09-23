@@ -26,7 +26,8 @@ module.exports.metadata =
     "org.apache.cordova.console": "0.2.13",
     "org.apache.cordova.device": "0.3.0",
     "org.apache.cordova.statusbar": "0.1.10",
-    "cordova-plugin-customurlscheme": "4.0.0"
+    "cordova-plugin-customurlscheme": "4.0.0",
+    "org.apache.cordova.inappbrowser": "0.6.0"
 }
 // BOTTOM OF METADATA
 });

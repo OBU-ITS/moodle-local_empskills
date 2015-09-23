@@ -248,14 +248,26 @@ var app = {
                     $('body').scrollTop(0);
                 });
             } else if (app.platform == 'wp8') {
-                $('textarea').on('focus', function () {
+                header_height = $('#page_header').outerHeight(false);
+/*                $('textarea').on('focus', function () {
                     setTimeout(function () {
-                        $('body').scrollTop(140);
+                        $(document).scrollTop($(document).scrollTop() - header_height);
                     }, 1000);
                 });
                 $('input[type="text"]').on('focus', function () {
                     setTimeout(function () {
-                        $('div').scrollTop(140);
+                        $(document).scrollTop($(document).scrollTop() - header_height);
+                    }, 1000);
+                });
+                */
+                $('#username').on('focus', function () {
+                    setTimeout(function () {
+                        $(document).scrollTop($(document).scrollTop() - header_height);
+                    }, 1000);
+                });
+                $('#entry_title').on('focus', function () {
+                    setTimeout(function () {
+                        $(document).scrollTop($(document).scrollTop() - header_height);
                     }, 1000);
                 });
             }
@@ -306,9 +318,7 @@ var app = {
     },
 
     hideAllPanes: function () {
-        if (app.platform == 'ios') {
-            $('body').scrollTop(0);
-        }
+        $(document).scrollTop(0);
         $('#btn_back').hide();
         $('#pane_short_title').hide();
         $('#pane_medium_title').hide();
@@ -860,9 +870,6 @@ var app = {
 			        $('#list_faculties').append(li);
 			    });
 			    $('#list_faculties li').on('click', function () {
-			        if (app.platform == 'ios') {
-			            $('body').scrollTop(0);
-			        }
 			        var faculty_id = $(this).data('faculty_id');
 			        var faculty_name = $(this).data('faculty_name');
 			        app.current_faculty_id = faculty_id;
@@ -896,9 +903,6 @@ var app = {
         li.data('menu_option', 'course_stats');
         $('#faculty_menu').append(li);
         $('#faculty_menu li').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
             var menu_option = $(this).data('menu_option');
             if (menu_option == 'faculty_stats') {
                 app.showFacultyStatsPane();
@@ -983,13 +987,13 @@ var app = {
 
         $('#btn_refresh').show();
         $('#btn_refresh').off('click');
-        $('#btn_refresh').on('click', app.getCourseStatsList);
+        $('#btn_refresh').on('click', function () {
+            app.current_courses_pos = 0;
+            app.getCourseStatsList();
+        });
 
         $('button[name="btn_list_faculty"]').off('click'); // Show previous handler
         $('button[name="btn_list_faculty"]').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
             app.current_course_id = 0;
             app.current_course_name = null;
             app.showSkillStatsPane();
@@ -1040,19 +1044,14 @@ var app = {
 			        $('#list_course_stats').append(li);
 			    });
 			    $('#list_course_stats li').on('click', function () {
-			        if (app.platform == 'ios') {
-			            $('body').scrollTop(0);
-			        }
 			        var course_id = $(this).data('course_id');
 			        var course_name = $(this).data('course_name');
-			        app.current_courses_pos = $('body').scrollTop();
+			        app.current_courses_pos = $(document).scrollTop();
 			        app.current_course_id = course_id;
 			        app.current_course_name = course_name;
 			        app.showSkillStatsPane();
 			    });
-			    if (app.current_courses_pos) {
-			        $('body').scrollTop(app.current_courses_pos);
-			    }
+		        $(document).scrollTop(app.current_courses_pos);
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1187,9 +1186,6 @@ var app = {
 			        $('#list_categories').append(li);
 			    });
 			    $('#list_categories li').on('click', function () {
-			        if (app.platform == 'ios') {
-			            $('body').scrollTop(0);
-			        }
 			        var class_id = $(this).data('class_id');
 			        var category_id = $(this).data('category_id');
 			        var category_name = $(this).data('category_name');
@@ -1219,13 +1215,13 @@ var app = {
 
         $('#btn_refresh').show();
         $('#btn_refresh').off('click');
-        $('#btn_refresh').on('click', app.getSkillsList);
+        $('#btn_refresh').on('click', function () {
+            app.current_skills_pos = 0;
+            app.getSkillsList();
+        });
 
         $('button[name="btn_list_all"]').off('click'); // Show previous handler
         $('button[name="btn_list_all"]').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
             app.current_skill_id = 0;
             app.current_skill_name = null;
             app.showEntriesPane();
@@ -1267,12 +1263,10 @@ var app = {
 			    });
 			    $('#list_skills li').on('click', function () {
 			        app.current_skill_id = $(this).data('skill_id');
-			        app.current_skills_pos = $('body').scrollTop();
+			        app.current_skills_pos = $(document).scrollTop();
 			        app.showEntriesPane();
 			    });
-			    if (app.current_skills_pos) {
-			        $('body').scrollTop(app.current_skills_pos);
-			    }
+		        $(document).scrollTop(app.current_skills_pos);
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1299,7 +1293,10 @@ var app = {
 
         $('#btn_refresh').show();
         $('#btn_refresh').off('click');
-        $('#btn_refresh').on('click', app.getEntriesList);
+        $('#btn_refresh').on('click', function () {
+            app.current_entries_pos = 0;
+            app.getEntriesList();
+        });
 
         if (app.current_skill_id == 0) {
             $('#new_entry').hide();
@@ -1307,9 +1304,6 @@ var app = {
             $('#new_entry').show();
             $('button[name="btn_new_entry"]').off('click'); // Show previous handler
             $('button[name="btn_new_entry"]').on('click', function () {
-                if (app.platform == 'ios') {
-                    $('body').scrollTop(0);
-                }
                 app.current_entry_id = 0;
                 app.showAddEditPane();
             });
@@ -1386,12 +1380,10 @@ var app = {
 			    });
 			    $('#list_entries li').on('click', function () {
 			        app.current_entry_id = $(this).data('entry_id');
-			        app.current_entries_pos = $('body').scrollTop();
+			        app.current_entries_pos = $(document).scrollTop();
 			        app.showEntryPane();
 			    });
-			    if (app.current_entries_pos) {
-			        $('body').scrollTop(app.current_entries_pos);
-			    }
+		        $(document).scrollTop(app.current_entries_pos);
 			},
 			function (data) {
 			    $('#btn_refresh').show();
@@ -1499,12 +1491,7 @@ var app = {
 
         $('button[name="btn_cancel_entry"]').show();
         $('button[name="btn_cancel_entry"]').off('click');
-        $('button[name="btn_cancel_entry"]').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
-            app.showEntriesPane();
-        });
+        $('button[name="btn_cancel_entry"]').on('click', app.showEntriesPane);
 
         $('#pane_add_edit').show();
         app.setPaneFooterHeight('pane_add_edit');
@@ -1592,21 +1579,11 @@ var app = {
 
         $('button[name="btn_edit_entry"]').show();
         $('button[name="btn_edit_entry"]').off('click');
-        $('button[name="btn_edit_entry"]').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
-            app.showAddEditPane();
-        });
+        $('button[name="btn_edit_entry"]').on('click', app.showAddEditPane);
 
         $('button[name="btn_delete_entry"]').show();
         $('button[name="btn_delete_entry"]').off('click');
-        $('button[name="btn_delete_entry"]').on('click', function () {
-            if (app.platform == 'ios') {
-                $('body').scrollTop(0);
-            }
-            app.showConfirmEntryDeletePane();
-        });
+        $('button[name="btn_delete_entry"]').on('click', app.showConfirmEntryDeletePane);
 
         $('#pane_entry').show();
 

@@ -12,10 +12,10 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="windows-target-version" value="8.1" />
     <preference name="windows-phone-target-version" value="8.1" />
-    <preference name="KeepRunning" value="False" />
-    <preference name="ShowTitle" value="True" />
-    <preference name="InAppBrowserStorageEnabled" value="False" />
-    <preference name="SuppressesIncrementalRendering" value="True" />
+    <preference name="KeepRunning" value="True" />
+    <preference name="ShowTitle" value="False" />
+    <preference name="InAppBrowserStorageEnabled" value="True" />
+    <preference name="SuppressesIncrementalRendering" value="False" />
     <preference name="Orientation" value="portrait" />
     <vs:platformSpecificValues>
         <vs:platformSpecificWidget id="OxfordBrookesUniversity.BRISC" platformName="windows" version="1.2.0.0">
@@ -28,7 +28,7 @@
     </vs:platformSpecificValues>
     <preference name="android-minSdkVersion" value="14" />
     <preference name="android-targetSdkVersion" value="19" />
-    <preference name="Fullscreen" value="True" />
+    <preference name="Fullscreen" value="False" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#424a52" />
     <preference name="StatusBarStyle" value="lightcontent" />
@@ -38,4 +38,5 @@
     <vs:plugin name="cordova-plugin-customurlscheme" src="https://github.com/EddyVerbruggen/Custom-URL-scheme" version="4.0.0">
         <param name="URL_SCHEME" value="empskill" />
     </vs:plugin>
+    <vs:plugin name="org.apache.cordova.inappbrowser" version="0.6.0" />
 </widget>

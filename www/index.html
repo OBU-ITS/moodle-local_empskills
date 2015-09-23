@@ -179,7 +179,22 @@
     <script type="text/javascript" src="scripts/index.js"></script>
     <script type="text/javascript">
         (function () {
-            launch.app('v1.2', 'https://noodle.brookes.ac.uk');
+            var url = document.referrer;
+
+            // Strip-off any path
+            var pos = url.indexOf('://');
+            if (pos >= 0) {
+                pos = url.indexOf('/', (pos + 3));
+                if (pos >= 0) {
+                    url = url.substr(0, pos);
+                }
+            }
+
+            if (url.indexOf('brookes') < 0) { // If not Brookes then make it so
+                url = 'https://doodle.brookes.ac.uk';
+            }
+
+            launch.app('v1.2', url);
         })();
     </script>
 </body>

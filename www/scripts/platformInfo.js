@@ -13,6 +13,6 @@ document.write('<p>Students are required to login with the same student number a
 document.write('<div id="image_attributions">');
 document.write('<h2>Image attributions</h2>');
 document.write('<p><a href="http://www.flaticon.com/free-icon/information-logotype-in-a-circle_472" target="_blank">Information icon</a> by <a href="http://www.freepik.com" target=_blank">freepik.com</a>.</p>');
-document.write('<p><a hrefr="https://www.iconfinder.com/icons/208024/audio_refresh_repeat_icon" target="_blank">Refresh icon</a> by <a href="https://www.iconfinder.com/icons4android.com" target="_blank">icons4android.com</a>.</p>');
+document.write('<p><a href="https://www.iconfinder.com/icons/208024/audio_refresh_repeat_icon" target="_blank">Refresh icon</a> by <a href="https://www.iconfinder.com/icons4android.com" target="_blank">icons4android.com</a>.</p>');
 document.write('<p>Both used under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a> / Changed from black to white.</p>');
 document.write('</div>');
