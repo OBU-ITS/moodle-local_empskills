@@ -44,6 +44,22 @@ echo $OUTPUT->header();
 
 echo '<center><iframe src="' . $launch . '" width="480" height="680"></iframe></center>';
 
+?>
+<h3>Brookes Individual Skills Catcher</h3>
+This web and mobile app was developed by the Faculty of Business in conjunction with OBIS-IS and allows students to easily record incidents and reflections around employability skills that they have experienced whilst at Brookes.<br />
+These records are very useful when preparing for a job interview.
+<h4>Overview</h4>
+<center><iframe width="480" height="270" src="https://www.youtube.com/embed/VKeVDL6O8kk" frameborder="0" allowfullscreen></iframe></center>
+<center><strong>Produced by the Faculty of Business</strong></center>
+<h4>Tutorial</h4>
+<center><iframe width="480" height="270" src="https://www.youtube.com/embed/fQUCRsoQyYs" frameborder="0" allowfullscreen></iframe></center>
+<center><strong>Produced by the Faculty of Business</strong></center>
+<h4>Get the Mobile App</h4>
+<p><a href="https://play.google.com/store/apps/details?id=uk.ac.brookes.empskill" target="_blank"><img src="images/android.png" alt="Android Mobiles"></a></p>
+<p><a href="https://itunes.apple.com/gb/app/brookes-individual-skills/id950891908?mt=8" target="_blank"><img src="images/ios.png" alt="Apple Mobiles"></a></p>
+<p><a href="http://www.windowsphone.com/en-gb/store/app/brisc/41ac44bf-26a8-44ca-931b-6b168976bb6d" target="_blank"><img src="images/windows.png" alt="Windows Mobiles"></a></p>
+<?php
+
 echo $OUTPUT->footer();
 
 
