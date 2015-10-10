@@ -26,21 +26,19 @@
 
 
 function local_empskills_extends_navigation($navigation) {
-    global $CFG, $USER, $PAGE;
- 
-	// Only let users with the appropriate capability see these navigation items
-    if (!has_capability('moodle/blog:create', context_system::instance())) {
-        return;
-    }
-    
-	$nodeProfile = $navigation->find('myprofile');
-	if (!$nodeProfile) {
-		return;
-	}
+    global $CFG;
 	
-	$nodeEmpskills = $nodeProfile->add(get_string('empskills', 'local_empskills')); // Add the parent
-	$nodeEmpskills->add('BRISC', '/local/empskills/brisc.php'); // BRISC web app
-	if (!empty($CFG->enableportfolios)) { // Only relevant if portfolios are enabled
-		$nodeEmpskills->add(get_string('exportskills', 'local_empskills'), '/local/empskills/empskills.php'); // ...and then the child
+	if (!empty($CFG->enableportfolios) && has_capability('moodle/blog:create', context_system::instance())) { // Only show if allowed
+		$nodeProfile = $navigation->find('myprofile'); // The required grandparent
+		if ($nodeProfile) {
+			$nodeEmpskills = $nodeProfile->get('empskills'); // Parent ('get' faster than 'find')
+			if (!$nodeEmpskills) { // Add the parent if necessary
+				$nodeEmpskills = $nodeProfile->add(get_string('empskills', 'local_empskills'),
+					null, TYPE_CUSTOM, null, 'empskills', null); // The 'key' is 'empskills'
+			}
+			if ($nodeEmpskills) {
+				$nodeEmpskills->add(get_string('exportskills', 'local_empskills'), '/local/empskills/empskills.php'); // Add the option
+			}
+		}
 	}
 }
