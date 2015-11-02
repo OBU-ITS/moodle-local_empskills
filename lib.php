@@ -29,12 +29,12 @@ function local_empskills_extends_navigation($navigation) {
     global $CFG;
 	
 	if (!empty($CFG->enableportfolios) && has_capability('moodle/blog:create', context_system::instance())) { // Only show if allowed
-		$nodeProfile = $navigation->find('myprofile'); // The required grandparent
+		$nodeProfile = $navigation->find('myprofile', navigation_node::TYPE_UNKNOWN); // The required grandparent
 		if ($nodeProfile) {
-			$nodeEmpskills = $nodeProfile->get('empskills'); // Parent ('get' faster than 'find')
+			$nodeEmpskills = $nodeProfile->get('empskills', navigation_node::TYPE_UNKNOWN); // Parent ('get' faster than 'find')
 			if (!$nodeEmpskills) { // Add the parent if necessary
 				$nodeEmpskills = $nodeProfile->add(get_string('empskills', 'local_empskills'),
-					null, TYPE_CUSTOM, null, 'empskills', null); // The 'key' is 'empskills'
+					null, navigation_node::TYPE_CUSTOM, null, 'empskills', null); // The 'key' is 'empskills'
 			}
 			if ($nodeEmpskills) {
 				$nodeEmpskills->add(get_string('exportskills', 'local_empskills'), '/local/empskills/empskills.php'); // Add the option
