@@ -25,7 +25,7 @@
  */
 
 
-function local_empskills_extends_navigation($navigation) {
+function local_empskills_extend_navigation($navigation) {
     global $CFG;
 	
 	if (!empty($CFG->enableportfolios) && has_capability('moodle/blog:create', context_system::instance())) { // Only show if allowed
