@@ -20,11 +20,15 @@
  *
  * @package    empskills
  * @category   local
- * @copyright  2015, Oxford Brookes University {@link http://www.brookes.ac.uk/}
+ * @copyright  2019, Oxford Brookes University {@link http://www.brookes.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['privacy:metadata:download'] = 'In order to export employability skills to a portfolio, the relevant user blog posts need to be downloaded.';
+$string['privacy:metadata:download:skills'] = 'For each relevant user blog post, the following are downloaded: Skill, Date, Title, Course, Body, Link.';
+
 $string['pluginname'] = 'empskills';
+
 $string['empskills'] = 'Employability skills';
 $string['exportskills'] = 'Export to portfolio';
 $string['selectmethod'] = 'Selection Method';
