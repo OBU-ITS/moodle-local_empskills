@@ -29,16 +29,12 @@ namespace local_empskills\privacy;
 use \core_privacy\local\metadata\collection;
 use \core_privacy\local\request\contextlist;
 use \core_privacy\local\request\approved_contextlist;
+use \core_privacy\local\request\userlist;
+use \core_privacy\local\request\approved_userlist;
 
 defined('MOODLE_INTERNAL') || die();
 
-if (interface_exists('\core_privacy\local\request\userlist')) {
-    interface my_userlist extends \core_privacy\local\request\userlist{}
-} else {
-    interface my_userlist {};
-}
-
-class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider, my_userlist {
+class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider, \core_privacy\local\request\core_userlist_provider {
 
 	// Privacy Subsystem must record that we export data to an external location
 	public static function get_metadata(collection $collection) : collection {
@@ -50,21 +46,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
 		return $collection;
 	}
 
-	public static function get_contexts_for_userid(int $userid) : contextlist {
-
-		$params = [
-			'contextlevel' => CONTEXT_USER,
-			'userid' => $userid
-		];
-
-		$sql = "SELECT c.id FROM {context} c
-			WHERE (c.contextlevel = :contextlevel) AND (c.instanceid = :userid)";
-
-		$contextlist = new \core_privacy\local\request\contextlist();
-		$contextlist->add_from_sql($sql, $params);
-
-		return $contextlist;
-	} 
+	public static function get_contexts_for_userid(int $userid) : contextlist {} 
 
 	public static function export_user_data(approved_contextlist $contextlist) {}
 
